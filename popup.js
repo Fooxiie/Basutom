@@ -1,11 +1,33 @@
 IsGame = false
 TypeGame = "unknown"
+mots = null
+
+Finish = function () {
+    document.getElementById('info_game').style.display = 'none'
+    document.getElementById('finish').style.display = 'block'
+}
 
 document.getElementById('testFirstWord').addEventListener("click", async () => {
     await TestBestStart()
     best_start = document.getElementById('best_start').innerHTML
-    setTimeout(EstimateMask, 4000);
+    await new Promise(r => setTimeout(r, 4000));
+    EstimateMask(best_start)
 })
+
+brainingThings = async function (mask, previous) {
+    mots = traiter(MOTS, previous, mask)
+
+    new_best_start = meilleurs_choix(mots, previous[0], previous.length)[0][0];
+    if (previous == new_best_start) {
+        Finish();
+        return;
+    }
+    document.getElementById('best_start').innerHTML = new_best_start
+    await TestBestStart()
+    best_start = document.getElementById('best_start').innerHTML
+    await new Promise(r => setTimeout(r, 4000));
+    EstimateMask(best_start)
+}
 
 defineIsGame = function (goodUrl) {
     diode = document.getElementById('diode')
@@ -15,19 +37,51 @@ defineIsGame = function (goodUrl) {
 }
 
 LastRow = function () {
-    console.log('Gettins Last row')
     rows = document.getElementById('grille').childNodes[0].childNodes
+    line = 0
 
+    lastElementChecked = null
+    for (elmt in rows) {
+        if (!isNaN(parseFloat(elmt)) && isFinite(elmt) && rows[elmt].childNodes[0].classList.length == 0) {
+            break;
+        }
+        lastElementChecked = rows[elmt].childNodes
+        line += 1;
+    }
+
+    mask = "";
+    for (detail in lastElementChecked) {
+        if (typeof (lastElementChecked[detail]) == "object") {
+            x = lastElementChecked[detail]
+            if (x.classList.contains('bien-place')) {
+                mask += "1"
+                continue
+            }
+            if (x.classList.contains('mal-place')) {
+                mask += "2"
+                continue
+            }
+            if (x.classList.contains('non-trouve')) {
+                mask += "0"
+                continue
+            }
+        }
+    }
+    return mask
 }
 
-EstimateMask = async function (previousword) {
+EstimateMask = async function (previous) {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+    maskGetted = "ahah bouuuuh"
+    console.log('EstimateMask : ' + previous) 
 
     chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: LastRow,
     }, (injectionResults) => {
-        line = injectionResults[0].result
+        maskGetted = injectionResults[0].result
+        brainingThings(maskGetted, previous)
     });
 }
 
