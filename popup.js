@@ -29,7 +29,7 @@ InitGame = async function () {
 
     chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        func: TypeGame == "sutom" ? Sutom_FindFirstMask : null,
+        func: TypeGame == "sutom" ? Sutom_FindFirstMask : Tusmo_FindFirstMask,
     }, (injectionResults) => {
         word_to_find = injectionResults[0].result
         document.getElementById('word_to_find').innerHTML = `${word_to_find.letter_count} lettres commencant par : ${word_to_find.start_letter}`
@@ -56,7 +56,8 @@ Finish = function () {
 document.getElementById('testFirstWord').addEventListener("click", async () => {
     best_start = document.getElementById('best_start').innerHTML
     await TestWord(best_start)
-    await new Promise(r => setTimeout(r, 400 * best_start.length));
+    time_to_wait = TypeGame == "sutom" ? 400 : 120
+    await new Promise(r => setTimeout(r, time_to_wait * best_start.length));
     EstimateMask(best_start)
 })
 
@@ -73,7 +74,8 @@ Boucle = async function (mask, previous) {
 
     document.getElementById('best_start').innerHTML = new_best_start
     await TestWord(new_best_start)
-    await new Promise(r => setTimeout(r, 400 * best_start.length));
+    time_to_wait = TypeGame == "sutom" ? 400 : 120
+    await new Promise(r => setTimeout(r, time_to_wait * best_start.length));
     EstimateMask(new_best_start)
 }
 
@@ -85,7 +87,7 @@ TestWord = async function (best_start) {
 
     chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        func: await WriteWord,
+        func: TypeGame == "sutom" ? await Sutom_WriteWord : await Tusmo_WriteWord,
         args: [best_start]
     });
 }
@@ -97,7 +99,7 @@ EstimateMask = async function (previous) {
 
     chrome.scripting.executeScript({
         target: { tabId: tab.id },
-        func: Sutom_LastRow,
+        func: TypeGame == "sutom" ? Sutom_LastRow : Tusmo_LastRow,
     }, (injectionResults) => {
         maskGetted = injectionResults[0].result
         Boucle(maskGetted, previous)
