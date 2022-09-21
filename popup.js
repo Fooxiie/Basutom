@@ -10,12 +10,14 @@ Finish = function () {
 document.getElementById('testFirstWord').addEventListener("click", async () => {
     await TestBestStart()
     best_start = document.getElementById('best_start').innerHTML
-    await new Promise(r => setTimeout(r, 4000));
+    await new Promise(r => setTimeout(r, 300 * best_start.length));
     EstimateMask(best_start)
 })
 
 brainingThings = async function (mask, previous) {
-    mots = traiter(MOTS, previous, mask)
+    if (mots == null)
+        mots = MOTS
+    mots = traiter(mots, previous, mask)
 
     new_best_start = meilleurs_choix(mots, previous[0], previous.length)[0][0];
     if (previous == new_best_start) {
@@ -25,7 +27,7 @@ brainingThings = async function (mask, previous) {
     document.getElementById('best_start').innerHTML = new_best_start
     await TestBestStart()
     best_start = document.getElementById('best_start').innerHTML
-    await new Promise(r => setTimeout(r, 4000));
+    await new Promise(r => setTimeout(r, 300 * best_start.length));
     EstimateMask(best_start)
 }
 
@@ -74,7 +76,7 @@ EstimateMask = async function (previous) {
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
     maskGetted = "ahah bouuuuh"
-    console.log('EstimateMask : ' + previous) 
+    console.log('EstimateMask : ' + previous)
 
     chrome.scripting.executeScript({
         target: { tabId: tab.id },
