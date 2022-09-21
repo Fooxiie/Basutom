@@ -5,15 +5,15 @@ Sutom_FindFirstMask = async function () {
     return { letter_count, start_letter }
 }
 
-Tusmo_FindFirstMask = async function () {
-    grille = document.getElementsByClassName('motus-grid')[0]
+Tusmo_FindFirstMask = function () {
+    grille = document.getElementsByClassName('motus-grid')[document.getElementsByClassName('motus-grid').length - 1]
     letter_count = grille.childElementCount / 6
     start_letter = grille.childNodes[0].nextElementSibling.outerText
     return { letter_count, start_letter }
 }
 
 Tusmo_LastRow = function () {
-    grille = document.getElementsByClassName('motus-grid')[0]
+    grille = document.getElementsByClassName('motus-grid')[document.getElementsByClassName('motus-grid').length - 1]
 
     size_word = grille.childElementCount / 6 - 1
 

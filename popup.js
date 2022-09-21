@@ -52,6 +52,11 @@ Finish = function () {
     document.getElementById('finish').style.display = 'block'
 }
 
+UnFinish = function () {
+    document.getElementById('info_game').style.display = 'block'
+    document.getElementById('finish').style.display = 'none'
+}
+
 // Boutton résoudre
 document.getElementById('testFirstWord').addEventListener("click", async () => {
     best_start = document.getElementById('best_start').innerHTML
@@ -59,6 +64,21 @@ document.getElementById('testFirstWord').addEventListener("click", async () => {
     time_to_wait = TypeGame == "sutom" ? 400 : 120
     await new Promise(r => setTimeout(r, time_to_wait * best_start.length));
     EstimateMask(best_start)
+})
+
+const reload = () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+        if (tabs[0]) { chrome.tabs.reload(tabs[0].id) }
+        chrome.runtime.reload()
+    })
+}
+
+// button reload
+document.getElementById('reloadBtn').addEventListener("click", async () => {
+    UnFinish()
+    document.getElementById('word_to_find').innerHTML = ""
+    InitGame()
+    mots = MOTS
 })
 
 Boucle = async function (mask, previous) {
