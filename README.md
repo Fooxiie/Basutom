@@ -1,6 +1,6 @@
 # Basutom
 
-Basutom est un project d'extension Chrome permettant de résoudre de manière auto les défis Sutom et Tusmo(en cours de dev)
+Basutom est un projet d'extension Chrome permettant de résoudre de manière auto les défis Sutom et Tusmo(en cours de dev)
 
 ## Installation
 1. Cloner le dépôt sur votre disque
@@ -9,4 +9,4 @@ Basutom est un project d'extension Chrome permettant de résoudre de manière au
   * [brave://extensions/](brave://extensions/)
 3. Activer le mode développeur
   > Généralement en haut à droite
-4. Charger l'extension en mode non empaqueté poitant sur le dossier cloné
+4. Charger l'extension en mode non empaqueté pointant sur le dossier cloné
